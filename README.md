@@ -38,7 +38,7 @@ Open a Pharo Playground and evaluate:
 ```smalltalk
 Metacello new
     baseline: 'TaskManager';
-    repository: 'github://YOUR_USERNAME/TaskManager/src';
+    repository: 'github://ihlatshwayo/TaskManager/src';
     load.
 ```
 

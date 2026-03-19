@@ -64,7 +64,7 @@ TMTaskPresenter >> manager: aManager [
 
 { #category : #initialization }
 TMTaskPresenter >> initializePresenters [
-	toolbar := self newToolBar.
+	toolbar := self newToolbar.
 	filterBar := self instantiate: TMFilterBarPresenter.
 	taskListPresenter := self instantiate: TMTaskListPresenter.
 	detailPanel := self instantiate: TMTaskDetailPresenter.
@@ -77,20 +77,21 @@ TMTaskPresenter >> initializePresenters [
 
 { #category : #initialization }
 TMTaskPresenter >> setupToolbar [
+	"Setup toolbar with buttons and separators"
 	toolbar
-		add: (SpToolBarButton new
+		addItem: (SpToolbarButton new
 			label: 'New Task';
 			icon: (self iconNamed: #add);
 			action: [ self newTask ];
 			yourself);
-		addSeparator;
-		add: (SpToolBarButton new
+		addItem: SpToolbarSeparator new;
+		addItem: (SpToolbarButton new
 			label: 'Delete';
 			icon: (self iconNamed: #remove);
 			action: [ self deleteSelectedTask ];
 			yourself);
-		addSeparator;
-		add: (SpToolBarButton new
+		addItem: SpToolbarSeparator new;
+		addItem: (SpToolbarButton new
 			label: 'Mark Done';
 			icon: (self iconNamed: #accept);
 			action: [ self markSelectedDone ];

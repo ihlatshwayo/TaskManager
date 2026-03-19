@@ -1,0 +1,1 @@
+Class {	#name : #TMTaskAnnouncement,	#superclass : #Announcement,	#instVars : [		'task'	],	#category : #'TaskManager-Core'}{ #category : #accessing }TMTaskAnnouncement >> task [	^ task]{ #category : #accessing }TMTaskAnnouncement >> task: aTask [	task := aTask]

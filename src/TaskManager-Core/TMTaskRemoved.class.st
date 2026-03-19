@@ -1,0 +1,1 @@
+Class {	#name : #TMTaskRemoved,	#superclass : #TMTaskAnnouncement,	#category : #'TaskManager-Core'}

@@ -8,6 +8,8 @@ Class {
 BaselineOfTaskManager >> baseline: spec [
 	<baseline>
 	spec for: #common do: [
+		spec baseline: 'Spec2' with: [ spec repository: 'github://pharo-spec/Spec' ].
+             spec package: 'TaskManager-Ui' with: [ spec requires: #('Spec2') ].
 		spec
 			package: 'TaskManager-Core';
 			package: 'TaskManager-UI' with: [ spec requires: #('TaskManager-Core') ];

@@ -1,1 +1,1 @@
-{ "name" : "TaskManager-Tests" }
+Package { #name : 'TaskManager-Tests' }

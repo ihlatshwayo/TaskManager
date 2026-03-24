@@ -1,6 +1,6 @@
 Class {
-	#name : #TMTaskPresenter,
-	#superclass : #SpPresenter,
+	#name : 'TMTaskPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'manager',
 		'taskListPresenter',
@@ -11,31 +11,11 @@ Class {
 		'selectedTask',
 		'filter'
 	],
-	#category : #'TaskManager-UI'
+	#category : 'TaskManager-UI',
+	#package : 'TaskManager-UI'
 }
 
-{ #category : #'instance creation' }
-TMTaskPresenter class >> open [
-	| app |
-	app := self new.
-	app manager: TMTaskManager instance.
-	app openWithSpec.
-	^ app
-]
-
-{ #category : #'instance creation' }
-TMTaskPresenter class >> openWithSampleData [
-	| mgr app |
-	TMTaskManager reset.
-	mgr := TMTaskManager instance.
-	TMSampleData populateManager: mgr.
-	app := self new.
-	app manager: mgr.
-	app openWithSpec.
-	^ app
-]
-
-{ #category : #layout }
+{ #category : 'layout' }
 TMTaskPresenter class >> defaultSpec [
 	^ SpBoxLayout newVertical
 		add: #toolbar expand: false;
@@ -48,21 +28,59 @@ TMTaskPresenter class >> defaultSpec [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'instance creation' }
+TMTaskPresenter class >> open [
+	| app |
+	app := self new.
+	app manager: TMTaskManager instance.
+	app openWithSpec.
+	^ app
+]
+
+{ #category : 'instance creation' }
+TMTaskPresenter class >> openWithSampleData [
+	| mgr app |
+	TMTaskManager reset.
+	mgr := TMTaskManager instance.
+	TMSampleData populateManager: mgr.
+	app := self new.
+	app manager: mgr.
+	app openWithSpec.
+	^ app
+]
+
+{ #category : 'actions' }
+TMTaskPresenter >> deleteSelectedTask [
+	selectedTask isNil ifTrue: [ ^ self ].
+	(self confirm: 'Delete task "', selectedTask title, '"?')
+		ifTrue: [
+			manager removeTask: selectedTask.
+			selectedTask := nil.
+			detailPanel showTask: nil ]
+]
+
+{ #category : 'actions' }
+TMTaskPresenter >> editTask: aTask [
+	| dialog |
+	dialog := TMTaskEditPresenter new.
+	dialog manager: manager.
+	dialog task: aTask.
+	dialog openDialogWithSpec
+]
+
+{ #category : 'window configuration' }
+TMTaskPresenter >> initialExtent [
+	^ 900 @ 600
+]
+
+{ #category : 'initialization' }
 TMTaskPresenter >> initialize [
 	super initialize.
 	filter := TMTaskFilter new.
 	selectedTask := nil
 ]
 
-{ #category : #accessing }
-TMTaskPresenter >> manager: aManager [
-	manager := aManager.
-	self subscribeToAnnouncements.
-	self refreshList
-]
-
-{ #category : #initialization }
+{ #category : 'initialization' }
 TMTaskPresenter >> initializePresenters [
 	toolbar := self newToolbar.
 	filterBar := self instantiate: TMFilterBarPresenter.
@@ -75,37 +93,44 @@ TMTaskPresenter >> initializePresenters [
 	self setupTaskList
 ]
 
-{ #category : #initialization }
-TMTaskPresenter >> setupToolbar [
-	"Setup toolbar with buttons and separators"
-	toolbar
-		addItem: (SpToolbarButton new
-			label: 'New Task';
-			icon: (self iconNamed: #add);
-			action: [ self newTask ];
-			yourself);
-		addItem: SpToolbarSeparator new;
-		addItem: (SpToolbarButton new
-			label: 'Delete';
-			icon: (self iconNamed: #remove);
-			action: [ self deleteSelectedTask ];
-			yourself);
-		addItem: SpToolbarSeparator new;
-		addItem: (SpToolbarButton new
-			label: 'Mark Done';
-			icon: (self iconNamed: #accept);
-			action: [ self markSelectedDone ];
-			yourself)
+{ #category : 'accessing' }
+TMTaskPresenter >> manager: aManager [
+	manager := aManager.
+	self subscribeToAnnouncements.
+	self refreshList
 ]
 
-{ #category : #initialization }
+{ #category : 'actions' }
+TMTaskPresenter >> markSelectedDone [
+	selectedTask isNil ifTrue: [ ^ self ].
+	selectedTask markDone.
+	manager updateTask: selectedTask
+]
+
+{ #category : 'actions' }
+TMTaskPresenter >> newTask [
+	| dialog |
+	dialog := TMTaskEditPresenter new.
+	dialog manager: manager.
+	dialog openDialogWithSpec
+]
+
+{ #category : 'refreshing' }
+TMTaskPresenter >> refreshList [
+	| filtered |
+	filtered := filter applyTo: manager allTasks.
+	taskListPresenter tasks: filtered.
+	self updateStatusBar
+]
+
+{ #category : 'initialization' }
 TMTaskPresenter >> setupFilterBar [
 	filterBar onFilterChanged: [ :f |
 		filter := f.
 		self refreshList ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 TMTaskPresenter >> setupTaskList [
 	taskListPresenter onTaskSelected: [ :task |
 		selectedTask := task.
@@ -114,23 +139,35 @@ TMTaskPresenter >> setupTaskList [
 		self editTask: task ]
 ]
 
-{ #category : #subscriptions }
+{ #category : 'initialization' }
+TMTaskPresenter >> setupToolbar [
+    toolbar
+        addItem: (SpToolbarButtonPresenter new
+            label: 'New Task';
+            icon: (self iconNamed: #add);
+            action: [ self newTask ];
+            yourself);
+        addItem: (SpToolbarButtonPresenter new
+            label: 'Delete';
+            icon: (self iconNamed: #remove);
+            action: [ self deleteSelectedTask ];
+            yourself)
+]
+
+{ #category : 'subscriptions' }
 TMTaskPresenter >> subscribeToAnnouncements [
-	manager announcer
-		when: TMTaskAdded do: [ self refreshList ];
-		when: TMTaskRemoved do: [ self refreshList ];
-		when: TMTaskUpdated do: [ self refreshList ]
+    manager announcer
+        when: TMTaskAdded do: [ :ann | self refreshList ] for: self;
+        when: TMTaskRemoved do: [ :ann | self refreshList ] for: self;
+        when: TMTaskUpdated do: [ :ann | self refreshList ] for: self
 ]
 
-{ #category : #refreshing }
-TMTaskPresenter >> refreshList [
-	| filtered |
-	filtered := filter applyTo: manager allTasks.
-	taskListPresenter tasks: filtered.
-	self updateStatusBar
+{ #category : 'title' }
+TMTaskPresenter >> title [
+	^ 'Task Manager'
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 TMTaskPresenter >> updateStatusBar [
 	| stats |
 	stats := manager statistics.
@@ -138,48 +175,4 @@ TMTaskPresenter >> updateStatusBar [
 		format: { stats at: #total. stats at: #todo.
 		          stats at: #inProgress. stats at: #done.
 		          stats at: #overdue })
-]
-
-{ #category : #actions }
-TMTaskPresenter >> newTask [
-	| dialog |
-	dialog := TMTaskEditPresenter new.
-	dialog manager: manager.
-	dialog openDialogWithSpec
-]
-
-{ #category : #actions }
-TMTaskPresenter >> editTask: aTask [
-	| dialog |
-	dialog := TMTaskEditPresenter new.
-	dialog manager: manager.
-	dialog task: aTask.
-	dialog openDialogWithSpec
-]
-
-{ #category : #actions }
-TMTaskPresenter >> deleteSelectedTask [
-	selectedTask isNil ifTrue: [ ^ self ].
-	(self confirm: 'Delete task "', selectedTask title, '"?')
-		ifTrue: [
-			manager removeTask: selectedTask.
-			selectedTask := nil.
-			detailPanel showTask: nil ]
-]
-
-{ #category : #actions }
-TMTaskPresenter >> markSelectedDone [
-	selectedTask isNil ifTrue: [ ^ self ].
-	selectedTask markDone.
-	manager updateTask: selectedTask
-]
-
-{ #category : #title }
-TMTaskPresenter >> title [
-	^ 'Task Manager'
-]
-
-{ #category : #'window configuration' }
-TMTaskPresenter >> initialExtent [
-	^ 900 @ 600
 ]

@@ -1,6 +1,6 @@
 Class {
-	#name : #TMTaskEditPresenter,
-	#superclass : #SpPresenter,
+	#name : 'TMTaskEditPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'titleInput',
 		'descriptionInput',
@@ -13,10 +13,11 @@ Class {
 		'task',
 		'manager'
 	],
-	#category : #'TaskManager-UI'
+	#category : 'TaskManager-UI',
+	#package : 'TaskManager-UI'
 }
 
-{ #category : #layout }
+{ #category : 'layout' }
 TMTaskEditPresenter class >> defaultSpec [
 	^ SpBoxLayout newVertical
 		spacing: 8;
@@ -49,7 +50,17 @@ TMTaskEditPresenter class >> defaultSpec [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'actions' }
+TMTaskEditPresenter >> closeDialog [
+	self window ifNotNil: [ :w | w close ]
+]
+
+{ #category : 'window configuration' }
+TMTaskEditPresenter >> initialExtent [
+	^ 480 @ 380
+]
+
+{ #category : 'initialization' }
 TMTaskEditPresenter >> initializePresenters [
 	titleInput := self newTextInput.
 	descriptionInput := self newText.
@@ -75,18 +86,12 @@ TMTaskEditPresenter >> initializePresenters [
 	cancelButton action: [ self closeDialog ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TMTaskEditPresenter >> manager: aManager [
 	manager := aManager
 ]
 
-{ #category : #accessing }
-TMTaskEditPresenter >> task: aTask [
-	task := aTask.
-	self populateFrom: aTask
-]
-
-{ #category : #private }
+{ #category : 'private' }
 TMTaskEditPresenter >> populateFrom: aTask [
 	titleInput text: aTask title.
 	descriptionInput text: aTask description.
@@ -96,7 +101,7 @@ TMTaskEditPresenter >> populateFrom: aTask [
 	tagsInput text: (aTask tags joinWith: ', ')
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 TMTaskEditPresenter >> saveTask [
 	| title |
 	title := titleInput text trimSeparators.
@@ -125,17 +130,13 @@ TMTaskEditPresenter >> saveTask [
 	self closeDialog
 ]
 
-{ #category : #actions }
-TMTaskEditPresenter >> closeDialog [
-	self window ifNotNil: [ :w | w close ]
+{ #category : 'accessing' }
+TMTaskEditPresenter >> task: aTask [
+	task := aTask.
+	self populateFrom: aTask
 ]
 
-{ #category : #title }
+{ #category : 'title' }
 TMTaskEditPresenter >> title [
 	^ task isNil ifTrue: [ 'New Task' ] ifFalse: [ 'Edit Task' ]
-]
-
-{ #category : #'window configuration' }
-TMTaskEditPresenter >> initialExtent [
-	^ 480 @ 380
 ]

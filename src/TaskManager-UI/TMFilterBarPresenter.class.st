@@ -1,6 +1,6 @@
 Class {
-	#name : #TMFilterBarPresenter,
-	#superclass : #SpPresenter,
+	#name : 'TMFilterBarPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'searchInput',
 		'statusFilter',
@@ -8,10 +8,11 @@ Class {
 		'clearButton',
 		'onFilterChangedBlock'
 	],
-	#category : #'TaskManager-UI'
+	#category : 'TaskManager-UI',
+	#package : 'TaskManager-UI'
 }
 
-{ #category : #layout }
+{ #category : 'layout' }
 TMFilterBarPresenter class >> defaultSpec [
 	^ SpBoxLayout newHorizontal
 		spacing: 6;
@@ -25,7 +26,15 @@ TMFilterBarPresenter class >> defaultSpec [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'actions' }
+TMFilterBarPresenter >> clearFilters [
+	searchInput text: ''.
+	statusFilter selectIndex: 1.
+	priorityFilter selectIndex: 1.
+	self notifyFilterChanged
+]
+
+{ #category : 'initialization' }
 TMFilterBarPresenter >> initializePresenters [
 	searchInput := self newTextInput.
 	searchInput placeholder: 'Search tasks...'.
@@ -44,12 +53,7 @@ TMFilterBarPresenter >> initializePresenters [
 	clearButton action: [ self clearFilters ]
 ]
 
-{ #category : #callbacks }
-TMFilterBarPresenter >> onFilterChanged: aBlock [
-	onFilterChangedBlock := aBlock
-]
-
-{ #category : #private }
+{ #category : 'private' }
 TMFilterBarPresenter >> notifyFilterChanged [
 	| f |
 	f := TMTaskFilter new.
@@ -61,10 +65,7 @@ TMFilterBarPresenter >> notifyFilterChanged [
 	onFilterChangedBlock ifNotNil: [ onFilterChangedBlock value: f ]
 ]
 
-{ #category : #actions }
-TMFilterBarPresenter >> clearFilters [
-	searchInput text: ''.
-	statusFilter selectIndex: 1.
-	priorityFilter selectIndex: 1.
-	self notifyFilterChanged
+{ #category : 'callbacks' }
+TMFilterBarPresenter >> onFilterChanged: aBlock [
+	onFilterChangedBlock := aBlock
 ]

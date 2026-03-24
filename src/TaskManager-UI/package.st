@@ -1,1 +1,1 @@
-{ "name" : "TaskManager-UI" }
+Package { #name : 'TaskManager-UI' }

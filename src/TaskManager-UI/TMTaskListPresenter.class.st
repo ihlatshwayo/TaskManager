@@ -1,23 +1,31 @@
 Class {
-	#name : #TMTaskListPresenter,
-	#superclass : #SpPresenter,
+	#name : 'TMTaskListPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'taskTable',
 		'onTaskSelectedBlock',
 		'onTaskDoubleClickedBlock',
 		'tasks'
 	],
-	#category : #'TaskManager-UI'
+	#category : 'TaskManager-UI',
+	#package : 'TaskManager-UI'
 }
 
-{ #category : #layout }
-TMTaskListPresenter class >> defaultSpec [
+{ #category : 'layout' }
+TMTaskListPresenter class >> defaultLayout [
 	^ SpBoxLayout newVertical
 		add: #taskTable;
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'layout' }
+TMTaskListPresenter >> defaultLayout [
+    ^ SpBoxLayout newVertical
+        add: #taskTable;
+        yourself
+]
+
+{ #category : 'initialization' }
 TMTaskListPresenter >> initializePresenters [
 	taskTable := self newTable.
 	tasks := OrderedCollection new.
@@ -57,17 +65,28 @@ TMTaskListPresenter >> initializePresenters [
 				onTaskDoubleClickedBlock value: sel selectedItem ] ] ]
 ]
 
-{ #category : #helpers }
+{ #category : 'callbacks' }
+TMTaskListPresenter >> onTaskDoubleClicked: aBlock [
+	onTaskDoubleClickedBlock := aBlock
+]
+
+{ #category : 'callbacks' }
+TMTaskListPresenter >> onTaskSelected: aBlock [
+	onTaskSelectedBlock := aBlock
+]
+
+{ #category : 'helpers' }
 TMTaskListPresenter >> priorityIcon: aPriority [
-	^ Dictionary new
+	^ (Dictionary new
 		at: #low put: '↓ Low';
 		at: #medium put: '→ Med';
 		at: #high put: '↑ High';
 		at: #critical put: '!! Crit';
+		yourself)
 		at: aPriority ifAbsent: [ aPriority ]
 ]
 
-{ #category : #helpers }
+{ #category : 'helpers' }
 TMTaskListPresenter >> statusLabel: aStatus [
 	^ Dictionary new
 		at: #todo put: '○ Todo';
@@ -77,18 +96,8 @@ TMTaskListPresenter >> statusLabel: aStatus [
 		at: aStatus ifAbsent: [ aStatus ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TMTaskListPresenter >> tasks: aCollection [
 	tasks := aCollection asOrderedCollection.
 	taskTable items: tasks
-]
-
-{ #category : #callbacks }
-TMTaskListPresenter >> onTaskSelected: aBlock [
-	onTaskSelectedBlock := aBlock
-]
-
-{ #category : #callbacks }
-TMTaskListPresenter >> onTaskDoubleClicked: aBlock [
-	onTaskDoubleClickedBlock := aBlock
 ]

@@ -1,6 +1,6 @@
 Class {
-	#name : #TMTaskDetailPresenter,
-	#superclass : #SpPresenter,
+	#name : 'TMTaskDetailPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'titleLabel',
 		'statusLabel',
@@ -12,10 +12,11 @@ Class {
 		'createdAtLabel',
 		'task'
 	],
-	#category : #'TaskManager-UI'
+	#category : 'TaskManager-UI',
+	#package : 'TaskManager-UI'
 }
 
-{ #category : #layout }
+{ #category : 'layout' }
 TMTaskDetailPresenter class >> defaultSpec [
 	^ SpBoxLayout newVertical
 		spacing: 8;
@@ -34,7 +35,19 @@ TMTaskDetailPresenter class >> defaultSpec [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'private' }
+TMTaskDetailPresenter >> clearDetail [
+	titleLabel label: '(No task selected)'.
+	statusLabel label: ''.
+	priorityLabel label: ''.
+	assigneeLabel label: ''.
+	dueDateLabel label: ''.
+	tagsLabel label: ''.
+	createdAtLabel label: ''.
+	descriptionText text: ''
+]
+
+{ #category : 'initialization' }
 TMTaskDetailPresenter >> initializePresenters [
 	titleLabel := self newLabel label: '(No task selected)'.
 	statusLabel := self newLabel label: ''.
@@ -47,27 +60,7 @@ TMTaskDetailPresenter >> initializePresenters [
 	descriptionText editable: false
 ]
 
-{ #category : #actions }
-TMTaskDetailPresenter >> showTask: aTask [
-	task := aTask.
-	aTask isNil
-		ifTrue: [ self clearDetail ]
-		ifFalse: [ self populateDetail: aTask ]
-]
-
-{ #category : #private }
-TMTaskDetailPresenter >> clearDetail [
-	titleLabel label: '(No task selected)'.
-	statusLabel label: ''.
-	priorityLabel label: ''.
-	assigneeLabel label: ''.
-	dueDateLabel label: ''.
-	tagsLabel label: ''.
-	createdAtLabel label: ''.
-	descriptionText text: ''
-]
-
-{ #category : #private }
+{ #category : 'private' }
 TMTaskDetailPresenter >> populateDetail: aTask [
 	titleLabel label: aTask title.
 	statusLabel label: 'Status: ', aTask status.
@@ -81,4 +74,12 @@ TMTaskDetailPresenter >> populateDetail: aTask [
 		ifFalse: [ aTask tags joinWith: ', ' ]).
 	createdAtLabel label: 'Created: ', (aTask createdAt printString copyFrom: 1 to: 16).
 	descriptionText text: aTask description
+]
+
+{ #category : 'actions' }
+TMTaskDetailPresenter >> showTask: aTask [
+	task := aTask.
+	aTask isNil
+		ifTrue: [ self clearDetail ]
+		ifFalse: [ self populateDetail: aTask ]
 ]

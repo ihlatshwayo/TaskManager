@@ -45,7 +45,7 @@ TMTaskPresenter class >> openWithSampleData [
 	TMSampleData populateManager: mgr.
 	app := self new.
 	app manager: mgr.
-	app openWithSpec.
+	app open.
 	^ app
 ]
 

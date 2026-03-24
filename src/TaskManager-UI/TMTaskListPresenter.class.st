@@ -18,13 +18,6 @@ TMTaskListPresenter class >> defaultLayout [
 		yourself
 ]
 
-{ #category : 'layout' }
-TMTaskListPresenter >> defaultLayout [
-    ^ SpBoxLayout newVertical
-        add: #taskTable;
-        yourself
-]
-
 { #category : 'initialization' }
 TMTaskListPresenter >> initializePresenters [
 	taskTable := self newTable.

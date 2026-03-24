@@ -34,6 +34,13 @@ TMFilterBarPresenter >> clearFilters [
 	self notifyFilterChanged
 ]
 
+{ #category : 'layout' }
+TMFilterBarPresenter >> defaultLayout [
+    ^ SpBoxLayout newTopToBottom
+        add: #taskList;
+        yourself
+]
+
 { #category : 'initialization' }
 TMFilterBarPresenter >> initializePresenters [
 	searchInput := self newTextInput.

@@ -49,6 +49,13 @@ TMTaskPresenter class >> openWithSampleData [
 	^ app
 ]
 
+{ #category : 'layout' }
+TMTaskPresenter >> defaultLayout [
+    ^ SpBoxLayout newTopToBottom
+        add: #taskListPresenter;
+        yourself
+]
+
 { #category : 'actions' }
 TMTaskPresenter >> deleteSelectedTask [
 	selectedTask isNil ifTrue: [ ^ self ].

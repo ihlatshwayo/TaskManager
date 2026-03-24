@@ -13,9 +13,9 @@ Class {
 
 { #category : 'layout' }
 TMTaskListPresenter class >> defaultLayout [
-	^ SpBoxLayout newVertical
-		add: #taskTable;
-		yourself
+    ^ SpBoxLayout newTopToBottom
+        add: '#taskTable';
+        yourself
 ]
 
 { #category : 'initialization' }
@@ -70,12 +70,11 @@ TMTaskListPresenter >> onTaskSelected: aBlock [
 
 { #category : 'helpers' }
 TMTaskListPresenter >> priorityIcon: aPriority [
-	^ (Dictionary new
+	^ Dictionary new
 		at: #low put: '↓ Low';
 		at: #medium put: '→ Med';
 		at: #high put: '↑ High';
 		at: #critical put: '!! Crit';
-		yourself)
 		at: aPriority ifAbsent: [ aPriority ]
 ]
 
